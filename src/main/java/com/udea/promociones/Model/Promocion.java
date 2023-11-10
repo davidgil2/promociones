@@ -32,8 +32,8 @@ public class Promocion implements Serializable{
 
     @ApiModelProperty(notes = "The promotion discount percentage")
     @Column(name = "discountPercentage", nullable = false, length = 4)
-    @Min(value = 1, message = "More or equal than 1")
-    @Max(value = 50, message = "Less or equal than 50")
+    @Min(1)
+    @Max(50)
     private @NonNull Integer discountPercentage;
 
     @ApiModelProperty(notes = "The promotion state")

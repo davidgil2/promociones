@@ -6,6 +6,8 @@ import com.udea.promociones.Exception.InvalidDiscountException;
 import com.udea.promociones.Exception.PromoNotFoundException;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +29,14 @@ public class PromocionController {
             @ApiResponse(code = 409, message = "Conflicto: La promoción ya existe")
     })
     @PostMapping("/save")
-    public long save(
-            @ApiParam(value = "Objeto promoción guardado en base de datos", required = true)
-            @RequestBody Promocion promocion) throws InvalidDiscountException {
-        if (promocion.getDiscountPercentage() < 1 || promocion.getDiscountPercentage() > 50) {
-            throw new InvalidDiscountException("El porcentaje de descuento debe estar entre 1 y 50");
+    public ResponseEntity<Long> save(
+            @ApiParam(value = "Objeto promoción guardado en base de datos", required = true) @Valid @RequestBody Promocion promocion) {
+        try {
+            promocionService.save(promocion);
+            return new ResponseEntity<Long>(promocion.getIdPromo(), HttpStatus.CREATED);
+        } catch (InvalidDiscountException e) {
+            throw new InvalidDiscountException("El descuento debe ser mayor a 0 y menor a 50.");
         }
-        promocionService.save(promocion);
-        return promocion.getIdPromo();
     }
 
     @ApiOperation(value = "Eliminar promoción")
@@ -55,7 +57,7 @@ public class PromocionController {
     }
 
     @ApiOperation(value = "Actualizar promoción")
-    @PutMapping("/update/{id}")
+    @PutMapping("/update")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Promoción actualizada exitosamente"),
             @ApiResponse(code = 404, message = "Promoción no encontrada"),
@@ -63,12 +65,12 @@ public class PromocionController {
             @ApiResponse(code = 500, message = "Error interno del servidor")
     })
     public ResponseEntity<Promocion> update(
-            @ApiParam(value = "Promoción actualizada en la base de datos", required = true) @Valid @RequestBody Promocion promocion,
-            @PathVariable long id) {
+            @ApiParam(value = "Promoción actualizada en la base de datos", required = true)
+            @Valid @RequestBody Promocion promocion) {
         try {
             return new ResponseEntity<Promocion>(promocionService.update(promocion), HttpStatus.OK);
         } catch (PromoNotFoundException e) {
-            throw new PromoNotFoundException("Promoción no encontrada con ID: " + id);
+            throw new PromoNotFoundException("Promoción no encontrada con ID: " + promocion.getIdPromo());
         }
     }
 
@@ -108,9 +110,12 @@ public class PromocionController {
             @ApiResponse(code = 500, message = "Error interno del servidor")
     })
     @GetMapping("/bestDiscount")
-    public ResponseEntity<Promocion> findBestDiscount() {
+    public ResponseEntity<List<Promocion>> findBestDiscount(
+        @RequestParam(required = true) Integer limit,
+        @RequestParam(required = false) Integer page ) {
+        Pageable pageable = PageRequest.of(page, limit);
         try {
-            return new ResponseEntity<Promocion>(promocionService.findBestDiscount(), HttpStatus.OK);
+            return new ResponseEntity<List<Promocion>>(promocionService.findBestDiscount(pageable), HttpStatus.OK);
         } catch (PromoNotFoundException e) {
             throw new PromoNotFoundException("No hay promociones disponibles.");
         }

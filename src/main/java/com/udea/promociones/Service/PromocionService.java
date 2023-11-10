@@ -2,6 +2,7 @@ package com.udea.promociones.Service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.udea.promociones.DAO.IPromocionDAO;
 import com.udea.promociones.Exception.PromoNotFoundException;
@@ -29,8 +30,8 @@ public class PromocionService {
         Promocion existPromo = promoDAO.findById(promo.getIdPromo()).orElse(null);
         existPromo.setName(promo.getName());
         existPromo.setDescription(promo.getDescription());
-/*         existPromo.setStartDate(promo.getStartDate());
-        existPromo.setEndDate(promo.getEndDate()); */
+        existPromo.setStartDate(promo.getStartDate());
+        existPromo.setEndDate(promo.getEndDate());
         existPromo.setDiscountPercentage(promo.getDiscountPercentage());
         existPromo.setCity(promo.getCity());
         existPromo.setIsActive(promo.getIsActive());
@@ -48,8 +49,8 @@ public class PromocionService {
     }
 
     //Encontrando promocion con el mayor descuento
-    public Promocion findBestDiscount() throws PromoNotFoundException{
-        Promocion promo = promoDAO.findPromoWithMostDescount();
+    public List<Promocion> findBestDiscount(Pageable pageable){
+        List<Promocion> promo = promoDAO.findPromoWithMostDescount(pageable);
         if (promo == null) {
             throw new PromoNotFoundException("No existe ninguna promocion");
         }else{
