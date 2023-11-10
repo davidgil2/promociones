@@ -29,8 +29,8 @@ public class PromocionService {
         Promocion existPromo = promoDAO.findById(promo.getIdPromo()).orElse(null);
         existPromo.setName(promo.getName());
         existPromo.setDescription(promo.getDescription());
-        existPromo.setStartDate(promo.getStartDate());
-        existPromo.setEndDate(promo.getEndDate());
+/*         existPromo.setStartDate(promo.getStartDate());
+        existPromo.setEndDate(promo.getEndDate()); */
         existPromo.setDiscountPercentage(promo.getDiscountPercentage());
         existPromo.setCity(promo.getCity());
         existPromo.setIsActive(promo.getIsActive());
