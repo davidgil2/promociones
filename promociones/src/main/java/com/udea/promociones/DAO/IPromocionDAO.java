@@ -9,10 +9,10 @@ import com.udea.promociones.Model.Promocion;
 
 public interface IPromocionDAO extends CrudRepository<Promocion, Long>{
     //La promoción con mayor descuento
-    @Query("SELECT p FROM Promocion p ORDER BY p.descuento DESC")
+    @Query("SELECT p FROM Promocion p ORDER BY p.discountPercentage DESC")
     public Promocion findPromoWithMostDescount();
 
     //Las promociones por una ciudad en especifico
-    @Query("SELECT p FROM Promocion p WHERE p.ciudad = ?1")
+    @Query("SELECT p FROM Promocion p WHERE p.city = ?1")
     public List<Promocion> findByCity(String ciudad);
 }
