@@ -1,16 +1,15 @@
 import { useState } from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Box,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import { Checkbox, FormControlLabel } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
-import esLocale from "date-fns/locale/es";
 
 const CreateModal = ({ open, onClose, onCreate }) => {
   CreateModal.propTypes = {
@@ -25,8 +24,8 @@ const CreateModal = ({ open, onClose, onCreate }) => {
     discountPercentage: "",
     isActive: false,
     city: "",
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: "", // Formato: 'YYYY-MM-DD HH:mm:ss'
+    endDate: "", // Formato: 'YYYY-MM-DD HH:mm:ss'
   });
 
   const handleCreate = () => {
@@ -42,8 +41,7 @@ const CreateModal = ({ open, onClose, onCreate }) => {
     onClose();
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (name, value) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
@@ -66,7 +64,7 @@ const CreateModal = ({ open, onClose, onCreate }) => {
             label="Nombre"
             variant="outlined"
             value={formData.name}
-            onChange={handleChange}
+            onChange={(e) => handleChange("name", e.target.value)}
           />
           <TextField
             id="description"
@@ -74,7 +72,7 @@ const CreateModal = ({ open, onClose, onCreate }) => {
             label="Descripción"
             variant="outlined"
             value={formData.description}
-            onChange={handleChange}
+            onChange={(e) => handleChange("description", e.target.value)}
           />
           <TextField
             required
@@ -84,7 +82,7 @@ const CreateModal = ({ open, onClose, onCreate }) => {
             variant="outlined"
             type="number"
             value={formData.discountPercentage}
-            onChange={handleChange}
+            onChange={(e) => handleChange("discountPercentage", e.target.value)}
           />
           <FormControlLabel
             label="¿Está activada?"
@@ -95,10 +93,7 @@ const CreateModal = ({ open, onClose, onCreate }) => {
                 variant="outlined"
                 checked={formData.isActive}
                 onChange={(e) =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    isActive: e.target.checked,
-                  }))
+                  handleChange("isActive", e.target.checked)
                 }
               />
             }
@@ -110,27 +105,26 @@ const CreateModal = ({ open, onClose, onCreate }) => {
             label="Ciudad"
             variant="outlined"
             value={formData.city}
-            onChange={handleChange}
+            onChange={(e) => handleChange("city", e.target.value)}
           />
-          <LocalizationProvider dateAdapter={AdapterDateFns} locale={esLocale}>
-            <DateTimePicker
-              required
-              id="startDate"
-              name="startDate"
-              label="Fecha de Inicio"
-              type="datetime-local"
-              value={formData.startDate}
-              onChange={(date) => handleChange("startDate", date)}
-            />
-            <DateTimePicker
-              required
-              id="endDate"
-              name="endDate"
-              label="Fecha de finalización"
-              value={formData.endDate}
-              onChange={(date) => handleChange("endDate", date)}
-            />
-          </LocalizationProvider>
+          <TextField
+            required
+            id="startDate"
+            name="startDate"
+            label="Fecha de Inicio 'YYYY-MM-DD HH:mm:ss'"
+            variant="outlined"
+            value={formData.startDate}
+            onChange={(e) => handleChange("startDate", e.target.value)}
+          />
+          <TextField
+            required
+            id="endDate"
+            name="endDate"
+            label="Fecha de finalización 'YYYY-MM-DD HH:mm:ss'"
+            variant="outlined"
+            value={formData.endDate}
+            onChange={(e) => handleChange("endDate", e.target.value)}
+          />
         </Box>
       </DialogContent>
       <DialogActions>

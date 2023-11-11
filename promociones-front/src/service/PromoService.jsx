@@ -7,8 +7,8 @@ export class PromoService {
     .then((res) => res.data);
   }
 
-  save(){
-    return axios.get(this.baseURL + "/save")
+  save(promocion){
+    return axios.post(this.baseURL + "/save", promocion)
     .then((res) => res.data);
   }
 }
