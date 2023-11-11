@@ -40,12 +40,12 @@ public class PromocionController {
     }
 
     @ApiOperation(value = "Eliminar promoción")
-    @DeleteMapping("/delete/{id}")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Promoción eliminada exitosamente"),
             @ApiResponse(code = 404, message = "Promoción no encontrada"),
             @ApiResponse(code = 500, message = "Error interno del servidor")
     })
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(
             @ApiParam(value = "ID de la promoción a ser eliminada", required = true) @PathVariable long id) {
         try {
@@ -57,16 +57,15 @@ public class PromocionController {
     }
 
     @ApiOperation(value = "Actualizar promoción")
-    @PutMapping("/update")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Promoción actualizada exitosamente"),
             @ApiResponse(code = 404, message = "Promoción no encontrada"),
             @ApiResponse(code = 400, message = "Parámetros de entrada inválidos"),
             @ApiResponse(code = 500, message = "Error interno del servidor")
     })
+    @PutMapping("/update")
     public ResponseEntity<Promocion> update(
-            @ApiParam(value = "Promoción actualizada en la base de datos", required = true)
-            @Valid @RequestBody Promocion promocion) {
+            @ApiParam(value = "Promoción actualizada en la base de datos", required = true) @Valid @RequestBody Promocion promocion) {
         try {
             return new ResponseEntity<Promocion>(promocionService.update(promocion), HttpStatus.OK);
         } catch (PromoNotFoundException e) {
@@ -75,12 +74,12 @@ public class PromocionController {
     }
 
     @ApiOperation(value = "Buscar promoción por ID")
-    @GetMapping("/find/{id}")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Promoción encontrada"),
             @ApiResponse(code = 400, message = "Parámetros de entrada inválidos"),
             @ApiResponse(code = 404, message = "Promoción no encontrada")
     })
+    @GetMapping("/find/{id}")
     public ResponseEntity<Promocion> findById(
             @ApiParam(value = "ID de la promoción a ser buscada", required = true) @PathVariable("id") int id) {
         Promocion promo = promocionService.findById(id);
@@ -111,8 +110,8 @@ public class PromocionController {
     })
     @GetMapping("/bestDiscount")
     public ResponseEntity<List<Promocion>> findBestDiscount(
-        @RequestParam(required = true) Integer limit,
-        @RequestParam(required = false) Integer page ) {
+            @RequestParam(required = true) Integer limit,
+            @RequestParam(required = false) Integer page) {
         Pageable pageable = PageRequest.of(page, limit);
         try {
             return new ResponseEntity<List<Promocion>>(promocionService.findBestDiscount(pageable), HttpStatus.OK);
@@ -122,12 +121,12 @@ public class PromocionController {
     }
 
     @ApiOperation(value = "Buscar promoción por ciudad")
-    @GetMapping("/findByCity/{city}")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Listado de promoc "),
             @ApiResponse(code = 400, message = "Parámetros de entrada inválidos"),
             @ApiResponse(code = 404, message = "Promociones por ciud ")
     })
+    @GetMapping("/findByCity/{city}")
     public ResponseEntity<List<Promocion>> findByCity(
             @ApiParam(value = "Ciudad para buscar promociones", required = true) @PathVariable("city") String city) {
         List<Promocion> promociones = promocionService.findByCity(city);
