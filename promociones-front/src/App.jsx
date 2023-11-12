@@ -3,11 +3,12 @@ import { PromoService } from "./service/PromoService";
 import DataTable from "./display/DataTable";
 import CrudPanel from "./display/CrudPanel";
 import CreateModal from "./display/CreateModal";
-import DeleteModal from "./display/DeleteModal"; // Agrega la importación del componente DeleteModal
+import DeleteModal from "./display/DeleteModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
 
-class App extends Component {
+export class App extends Component {
   constructor() {
     super();
     this.state = {
@@ -38,33 +39,29 @@ class App extends Component {
         toast.error("Error al crear la promoción");
         console.error("Error al crear la promoción:", error);
       });
-  
+
     this.handleCloseCreateModal();
   };
 
-  handleDelete = () => {
-    const { promoToDeleteId } = this.state;
-
-    if (promoToDeleteId) {
-      this.promoService
-        .delete(promoToDeleteId)
-        .then(() => {
-          toast.success("Promoción eliminada exitosamente");
-          this.promoService.getAll().then((data) => {
-            this.setState({ promos: data });
-          });
-        })
-        .catch((error) => {
-          toast.error("Error al eliminar la promoción");
-          console.error("Error al eliminar la promoción:", error);
+  handleDelete = (promoId) => {
+    this.promoService
+      .delete(promoId)
+      .then(() => {
+        toast.success(`Promoción con ID ${promoId} eliminada exitosamente`);
+        this.promoService.getAll().then((data) => {
+          this.setState({ promos: data });
         });
-
-      this.handleCloseDeleteModal();
-    }
+      })
+      .catch((error) => {
+        toast.error("Error al eliminar la promoción");
+        console.error("Error al eliminar la promoción:", error);
+      });
+  
+    this.handleCloseDeleteModal();
   };
 
-  handleOpenDeleteModal = (promoId) => {
-    this.setState({ isDeleteModalOpen: true, promoToDeleteId: promoId });
+  handleOpenDeleteModal = () => {
+    this.setState({ isDeleteModalOpen: true });
   };
 
   handleCloseDeleteModal = () => {
@@ -97,18 +94,18 @@ class App extends Component {
           onCreate={this.handleOpenCreateModal}
           onGet={this.handleGet}
           onUpdate={this.handleUpdate}
-          onDelete={this.handleOpenDeleteModal} // Cambia el evento onDelete para abrir el modal de eliminación
+          onDelete={this.handleOpenDeleteModal}
         />
-        <DataTable promos={promos} onDelete={this.handleOpenDeleteModal} />
+        <DataTable promos={promos} />
         <CreateModal
           open={isCreateModalOpen}
           onClose={this.handleCloseCreateModal}
           onCreate={this.handleCreate}
         />
         <DeleteModal
-          show={isDeleteModalOpen}
-          handleClose={this.handleCloseDeleteModal}
-          handleDelete={this.handleDelete}
+          open={isDeleteModalOpen}
+          onClose={this.handleCloseDeleteModal}
+          onDelete={this.handleDelete}
         />
         <ToastContainer />
       </>

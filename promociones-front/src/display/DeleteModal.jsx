@@ -1,24 +1,57 @@
-import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
+import { useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import PropTypes from "prop-types";
+import { ToastContainer, toast } from "react-toastify";
 
 const DeleteModal = ({ open, onClose, onDelete }) => {
-    DeleteModal.propTypes = {
-        open: PropTypes.bool.isRequired,
-        onClose: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
-      };
+  const [promoId, setPromoId] = useState("");
 
-    return (
-        <Dialog open={open} onClose={onClose}>
+  const handleClose = () => {
+    onClose();
+  };
+
+  const handleDelete = () => {
+    onDelete(promoId).then(() => {
+      toast.success("Promoción eliminada exitosamente");
+      onClose();
+    }).catch((error) => {
+      toast.error("Error al eliminar la promoción");
+      console.error("Error al eliminar la promoción: " + promoId, error);
+    });
+  };
+
+  return (
+    <>
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>¿Está seguro que desea eliminar la promoción?</DialogTitle>
+        <TextField
+          label="ID de promoción a eliminar"
+          variant="outlined"
+          value={promoId}
+          onChange={(e) => setPromoId(e.target.value)}
+        />
         <DialogActions>
-            <Button onClick={onClose}>Cancelar</Button>
-            <Button onClick={onDelete} color="secondary">
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleDelete} color="secondary">
             Eliminar
-            </Button>
+          </Button>
         </DialogActions>
-        </Dialog>
-    );
-}
+      </Dialog>
+      <ToastContainer />
+    </>
+  );
+};
+
+DeleteModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default DeleteModal;
