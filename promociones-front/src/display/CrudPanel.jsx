@@ -7,12 +7,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 
-
 const CrudPanel = ({ onGet, onCreate, onUpdate, onDelete }) => {
   CrudPanel.propTypes = {
     onGet: PropTypes.func.isRequired,
     onCreate: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired, // Cambiado de onEdit a onUpdate
     onDelete: PropTypes.func.isRequired,
   };
 
@@ -28,7 +27,7 @@ const CrudPanel = ({ onGet, onCreate, onUpdate, onDelete }) => {
         onCreate();
         break;
       case "update":
-        onUpdate();
+        onUpdate(); // Cambiado de onEdit a onUpdate
         break;
       case "delete":
         onDelete();

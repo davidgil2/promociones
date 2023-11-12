@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -13,7 +13,23 @@ import {
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 
-const EditModal = ({ open, onClose, onEdit }) => {
+const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
+  EditModal.propTypes = {
+    open: PropTypes.bool,
+    onClose: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    promoToEditData: PropTypes.shape({
+      idPromo: PropTypes.string,
+      name: PropTypes.string,
+      description: PropTypes.string,
+      discountPercentage: PropTypes.string,
+      isActive: PropTypes.bool,
+      city: PropTypes.string,
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+    }),
+  };
+
   const [formData, setFormData] = useState({
     idPromo: "",
     name: "",
@@ -24,6 +40,22 @@ const EditModal = ({ open, onClose, onEdit }) => {
     startDate: "", // Formato: 'YYYY-MM-DD HH:mm:ss'
     endDate: "", // Formato: 'YYYY-MM-DD HH:mm:ss'
   });
+
+  useEffect(() => {
+    // Reset form data when the modal opens
+    if (open && promoToEditData) {
+      setFormData({
+        idPromo: promoToEditData.idPromo,
+        name: promoToEditData.name,
+        description: promoToEditData.description,
+        discountPercentage: promoToEditData.discountPercentage,
+        isActive: promoToEditData.isActive,
+        city: promoToEditData.city,
+        startDate: promoToEditData.startDate,
+        endDate: promoToEditData.endDate,
+      });
+    }
+  }, [open, promoToEditData]);
 
   const handleClose = () => {
     onClose();
@@ -71,7 +103,7 @@ const EditModal = ({ open, onClose, onEdit }) => {
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Crear Nueva Promoción</DialogTitle>
+        <DialogTitle>Editar Promoción</DialogTitle>
         <DialogContent>
           <Box
             component="form"
@@ -87,7 +119,7 @@ const EditModal = ({ open, onClose, onEdit }) => {
               name="ID de la promo"
               label="ID"
               variant="outlined"
-              value={formData.name}
+              value={formData.idPromo}
               onChange={(e) => handleChange("idPromo", e.target.value)}
             />
             <TextField
@@ -163,19 +195,13 @@ const EditModal = ({ open, onClose, onEdit }) => {
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>
           <Button onClick={handleEdit} color="primary">
-            Crear
+            Editar
           </Button>
         </DialogActions>
       </Dialog>
       <ToastContainer />
     </>
   );
-};
-
-EditModal.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
 };
 
 export default EditModal;

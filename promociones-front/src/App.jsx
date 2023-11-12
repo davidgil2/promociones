@@ -17,6 +17,7 @@ export class App extends Component {
       isCreateModalOpen: false,
       isDeleteModalOpen: false, // Agrega el estado para el modal de eliminación
       promoToDeleteId: null, // Agrega el estado para almacenar el ID de la promoción a eliminar
+      promoToEditData: null, // Agrega el estado para almacenar los datos de la promoción a editar
     };
     this.promoService = new PromoService();
   }
@@ -65,7 +66,7 @@ export class App extends Component {
         toast.error("Error al eliminar la promoción");
         console.error("Error al eliminar la promoción:", error);
       });
-  
+
     this.handleCloseDeleteModal();
   };
 
@@ -78,15 +79,13 @@ export class App extends Component {
   };
 
   handleEdit = (editedPromotionData) => {
-    const { promoService } = this;
-
-    promoService
+    this.promoService
       .edit(editedPromotionData)
       .then(() => {
         // Se edita la promoción exitosamente
         toast.success("Promoción editada exitosamente");
         // Actualiza la lista de promociones
-        promoService.getAll().then((data) => {
+        this.promoService.getAll().then((data) => {
           this.setState({ promos: data });
         });
       })
@@ -100,20 +99,30 @@ export class App extends Component {
     this.handleCloseEditModal();
   };
 
-  handleOpenEditModal = () => {
-    this.setState({ isEditModalOpen: true });
-  }
+  handleOpenEditModal = (promoId) => {
+    // Obtén los detalles de la promoción para editar
+    const promoToEdit = this.state.promos.find(
+      (promo) => promo.idPromo === promoId
+    );
+
+    // Establece los datos de la promoción en el estado para que el modal los use
+    this.setState({
+      isEditModalOpen: true,
+      promoToEditData: promoToEdit,
+    });
+  };
 
   handleCloseEditModal = () => {
     this.setState({ isEditModalOpen: false });
-  }
-  
+  };
+
   handleGet = () => {
     console.log("Obtener datos");
   };
 
   render() {
-    const { promos, isCreateModalOpen, isDeleteModalOpen, isEditModalOpen } = this.state;
+    const { promos, isCreateModalOpen, isDeleteModalOpen, isEditModalOpen } =
+      this.state;
 
     return (
       <>
@@ -121,7 +130,7 @@ export class App extends Component {
         <CrudPanel
           onCreate={this.handleOpenCreateModal}
           onGet={this.handleGet}
-          onUpdate={this.handleUpdate}
+          onUpdate={this.handleOpenEditModal}
           onDelete={this.handleOpenDeleteModal}
         />
         <DataTable promos={promos} />
@@ -139,6 +148,7 @@ export class App extends Component {
           open={isEditModalOpen}
           onClose={this.handleCloseEditModal}
           onEdit={this.handleEdit}
+          promoToEditData={this.state.promoToEditData}
         />
         <ToastContainer />
       </>
