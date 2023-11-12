@@ -11,4 +11,9 @@ export class PromoService {
     return axios.post(this.baseURL + "/save", promocion)
     .then((res) => res.data);
   }
+
+  delete(id){
+    return axios.delete(this.baseURL + "/delete/" + id)
+    .then((res) => res.data);
+  }
 }
