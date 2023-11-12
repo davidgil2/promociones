@@ -64,13 +64,13 @@ const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
   const handleEdit = () => {
     // Validar campos requeridos
     const requiredFields = [
-      "ID de la promo",
-      "Nombre",
-      "Descripción",
-      "Porcentaje de descuento",
-      "Ciudad",
-      "Fecha de inicio",
-      "Fecha de finalización",
+      "idPromo",
+      "name",
+      "description",
+      "discountPercentage",
+      "city",
+      "startDate",
+      "endDate",
     ];
     const missingFields = requiredFields.filter((field) => !formData[field]);
 

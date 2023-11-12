@@ -33,12 +33,12 @@ const CreateModal = ({ open, onClose, onCreate }) => {
   const handleCreate = () => {
     // Validar campos requeridos
     const requiredFields = [
-      "Nombre",
-      "Descripción",
-      "Porcentaje de descuento",
-      "Ciudad",
-      "Fecha de inicio",
-      "Fecha de finalización",
+      "name",
+      "description",
+      "discountPercentage",
+      "city",
+      "startDate",
+      "endDate",
     ];
     const missingFields = requiredFields.filter((field) => !formData[field]);
 
