@@ -16,4 +16,9 @@ export class PromoService {
     return axios.delete(this.baseURL + "/delete/" + id)
     .then((res) => res.data);
   }
+
+  edit(promocion){
+    return axios.put(this.baseURL + "/update", promocion)
+    .then((res) => res.data);
+  }
 }

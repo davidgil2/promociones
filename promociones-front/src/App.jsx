@@ -4,6 +4,7 @@ import DataTable from "./display/DataTable";
 import CrudPanel from "./display/CrudPanel";
 import CreateModal from "./display/CreateModal";
 import DeleteModal from "./display/DeleteModal";
+import EditModal from "./display/EditModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -43,6 +44,14 @@ export class App extends Component {
     this.handleCloseCreateModal();
   };
 
+  handleOpenCreateModal = () => {
+    this.setState({ isCreateModalOpen: true });
+  };
+
+  handleCloseCreateModal = () => {
+    this.setState({ isCreateModalOpen: false });
+  };
+
   handleDelete = (promoId) => {
     this.promoService
       .delete(promoId)
@@ -68,24 +77,43 @@ export class App extends Component {
     this.setState({ isDeleteModalOpen: false, promoToDeleteId: null });
   };
 
+  handleEdit = (editedPromotionData) => {
+    const { promoService } = this;
+
+    promoService
+      .edit(editedPromotionData)
+      .then(() => {
+        // Se edita la promoción exitosamente
+        toast.success("Promoción editada exitosamente");
+        // Actualiza la lista de promociones
+        promoService.getAll().then((data) => {
+          this.setState({ promos: data });
+        });
+      })
+      .catch((error) => {
+        // Falla al editar la promoción
+        toast.error("Error al editar la promoción");
+        console.error("Error al editar la promoción:", error);
+      });
+
+    // Cierra el modal de edición
+    this.handleCloseEditModal();
+  };
+
+  handleOpenEditModal = () => {
+    this.setState({ isEditModalOpen: true });
+  }
+
+  handleCloseEditModal = () => {
+    this.setState({ isEditModalOpen: false });
+  }
+  
   handleGet = () => {
     console.log("Obtener datos");
   };
 
-  handleUpdate = () => {
-    console.log("Actualizar datos");
-  };
-
-  handleOpenCreateModal = () => {
-    this.setState({ isCreateModalOpen: true });
-  };
-
-  handleCloseCreateModal = () => {
-    this.setState({ isCreateModalOpen: false });
-  };
-
   render() {
-    const { promos, isCreateModalOpen, isDeleteModalOpen } = this.state;
+    const { promos, isCreateModalOpen, isDeleteModalOpen, isEditModalOpen } = this.state;
 
     return (
       <>
@@ -106,6 +134,11 @@ export class App extends Component {
           open={isDeleteModalOpen}
           onClose={this.handleCloseDeleteModal}
           onDelete={this.handleDelete}
+        />
+        <EditModal
+          open={isEditModalOpen}
+          onClose={this.handleCloseEditModal}
+          onEdit={this.handleEdit}
         />
         <ToastContainer />
       </>
