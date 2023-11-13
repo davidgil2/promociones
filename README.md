@@ -49,3 +49,5 @@ Asegúrese de tener instalados los siguientes componentes antes de ejecutar la a
 3. Inicia la aplicación React: `npm run dev`
 
 La aplicación estará disponible por defecto en [http://localhost:5173](http://localhost:5173).
+
+**Nota‼️** Recuerde cambiar las credenciales en el archivo *application.properties*, el cual se encuentra en la carpeta `promociones-back\src\main\resources\application.properties`. Especificamente el usuario y la contraseña para hacer la conexión con la base de datos en MYSQL
