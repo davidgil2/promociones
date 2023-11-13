@@ -5,15 +5,17 @@ import {
   Button,
   Checkbox,
   Dialog,
+  DialogTitle,
   DialogActions,
   DialogContent,
-  DialogTitle,
   FormControlLabel,
   TextField,
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 
+// Componente EditModal para editar una promoción existente
 const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
+  // Prop-Types para validar las propiedades
   EditModal.propTypes = {
     open: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
@@ -30,6 +32,7 @@ const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
     }),
   };
 
+  // Estado local para almacenar datos del formulario
   const [formData, setFormData] = useState({
     idPromo: "",
     name: "",
@@ -37,12 +40,13 @@ const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
     discountPercentage: "",
     isActive: false,
     city: "",
-    startDate: "", // Formato: 'YYYY-MM-DD HH:mm:ss'
-    endDate: "", // Formato: 'YYYY-MM-DD HH:mm:ss'
+    startDate: "",
+    endDate: "",
   });
 
+  // Efecto para actualizar el estado cuando cambian las props
   useEffect(() => {
-    // Reset form data when the modal opens
+    // Resetear los datos del formulario cuando el modal se abre
     if (open && promoToEditData) {
       setFormData({
         idPromo: promoToEditData.idPromo,
@@ -57,10 +61,12 @@ const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
     }
   }, [open, promoToEditData]);
 
+  // Función para cerrar el modal
   const handleClose = () => {
     onClose();
   };
 
+  // Función para manejar la edición de la promoción
   const handleEdit = () => {
     // Validar campos requeridos
     const requiredFields = [
@@ -79,18 +85,19 @@ const EditModal = ({ open = false, onClose, onEdit, promoToEditData }) => {
       return;
     }
 
-    // Lógica para crear datos
+    // Lógica para editar datos
     onEdit(formData)
       .then(() => {
-        // Solicitud exitosa
+        // Edición exitosa
         onClose();
       })
       .catch((error) => {
-        // Solicitud fallida
-        console.error("Error al crear la promoción:", error);
+        // Edición fallida
+        console.error("Error al editar la promoción:", error);
       });
   };
 
+  // Función para manejar cambios en los campos del formulario
   const handleChange = (name, value) => {
     setFormData((prevData) => ({
       ...prevData,

@@ -12,7 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
-export class App extends Component {
+class App extends Component {
   constructor() {
     super();
     this.state = {
@@ -30,20 +30,25 @@ export class App extends Component {
     this.promoService = new PromoService();
   }
 
+  // Método que se ejecuta al montar el componente
   componentDidMount() {
+    this.fetchAllPromotions();
+  }
+
+  // Método para obtener todas las promociones
+  fetchAllPromotions = () => {
     this.promoService.getAll().then((data) => {
       this.setState({ promos: data });
     });
-  }
+  };
 
+  // Método para crear una nueva promoción
   handleCreate = (newPromotionData) => {
     this.promoService
       .save(newPromotionData)
       .then(() => {
         toast.success("Promoción creada exitosamente");
-        this.promoService.getAll().then((data) => {
-          this.setState({ promos: data });
-        });
+        this.fetchAllPromotions();
       })
       .catch((error) => {
         toast.error("Error al crear la promoción");
@@ -53,6 +58,7 @@ export class App extends Component {
     this.handleCloseCreateModal();
   };
 
+  // Métodos para abrir y cerrar el modal de creación
   handleOpenCreateModal = () => {
     this.setState({ isCreateModalOpen: true });
   };
@@ -61,14 +67,13 @@ export class App extends Component {
     this.setState({ isCreateModalOpen: false });
   };
 
+  // Método para eliminar una promoción
   handleDelete = (promoId) => {
     this.promoService
       .delete(promoId)
       .then(() => {
         toast.success(`Promoción con ID ${promoId} eliminada exitosamente`);
-        this.promoService.getAll().then((data) => {
-          this.setState({ promos: data });
-        });
+        this.fetchAllPromotions();
       })
       .catch((error) => {
         toast.error("Error al eliminar la promoción");
@@ -78,6 +83,7 @@ export class App extends Component {
     this.handleCloseDeleteModal();
   };
 
+  // Métodos para abrir y cerrar el modal de eliminación
   handleOpenDeleteModal = () => {
     this.setState({ isDeleteModalOpen: true });
   };
@@ -86,14 +92,13 @@ export class App extends Component {
     this.setState({ isDeleteModalOpen: false, promoToDeleteId: null });
   };
 
+  // Método para editar una promoción
   handleEdit = (editedPromotionData) => {
     this.promoService
       .edit(editedPromotionData)
       .then(() => {
         toast.success("Promoción editada exitosamente");
-        this.promoService.getAll().then((data) => {
-          this.setState({ promos: data });
-        });
+        this.fetchAllPromotions();
       })
       .catch((error) => {
         toast.error("Error al editar la promoción");
@@ -103,6 +108,7 @@ export class App extends Component {
     this.handleCloseEditModal();
   };
 
+  // Métodos para abrir y cerrar el modal de edición
   handleOpenEditModal = (promoId) => {
     const promoToEdit = this.state.promos.find(
       (promo) => promo.idPromo === promoId
@@ -118,21 +124,12 @@ export class App extends Component {
     this.setState({ isEditModalOpen: false });
   };
 
+  // Método para obtener todas las promociones
   handleGet = () => {
-    this.promoService
-      .getAll()
-      .then(() => {
-        toast.success("Se mostrarón todas las promociones");
-        this.promoService.getAll().then((data) => {
-          this.setState({ promos: data });
-        });
-      })
-      .catch((error) => {
-        toast.error("Error al obtener promoción");
-        console.error("Error al obtener promoción", error);
-      });
+    this.fetchAllPromotions();
   };
 
+  // Método para encontrar la mejor promoción con descuento
   handleFindBestDiscount = (limit, page) => {
     this.promoService
       .findBestDiscount(limit, page)
@@ -147,6 +144,7 @@ export class App extends Component {
       });
   };
 
+  // Métodos para abrir y cerrar el modal de la mejor promoción con descuento
   handleOpenFindBestDiscountModal = () => {
     this.setState({ isFindBestDiscountModalOpen: true });
   };
@@ -155,6 +153,7 @@ export class App extends Component {
     this.setState({ isFindBestDiscountModalOpen: false });
   };
 
+  // Método para encontrar una promoción por su ID
   handleFindById = (promoId) => {
     this.promoService
       .findById(promoId)
@@ -169,6 +168,7 @@ export class App extends Component {
       });
   };
 
+  // Métodos para abrir y cerrar el modal de búsqueda por ID
   handleOpenFindById = () => {
     this.setState({ isFindByIdModalOpen: true });
   };
@@ -177,6 +177,7 @@ export class App extends Component {
     this.setState({ isFindByIdModalOpen: false, promoToFindId: null });
   };
 
+  // Método para encontrar promociones por ciudad
   handleFindByCity = (city) => {
     this.promoService
       .findByCity(city)
@@ -191,6 +192,7 @@ export class App extends Component {
       });
   };
 
+  // Métodos para abrir y cerrar el modal de búsqueda por ciudad
   handleOpenFindByCity = () => {
     this.setState({ isFindByCityModalOpen: true });
   };
