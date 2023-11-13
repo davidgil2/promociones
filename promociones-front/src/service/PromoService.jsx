@@ -21,4 +21,19 @@ export class PromoService {
     return axios.put(this.baseURL + "/update", promocion)
     .then((res) => res.data);
   }
+
+  findById(id) {
+    return axios.get(`${this.baseURL}/find/${id}`)
+      .then((res) => res.data);
+  }
+
+  findByCity(city) {
+    return axios.get(`${this.baseURL}/findByCity/${city}`)
+      .then((res) => res.data);
+  }
+
+  findBestDiscount(){
+    return axios.get(this.baseURL+"/bestDiscount")
+      .then((res)=> res.data)
+  }
 }

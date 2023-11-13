@@ -5,6 +5,8 @@ import CrudPanel from "./display/CrudPanel";
 import CreateModal from "./display/CreateModal";
 import DeleteModal from "./display/DeleteModal";
 import EditModal from "./display/EditModal";
+import FindByIdModal from "./display/FindByIdModal";
+import FindByCity from "./display/FindByCity";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -15,9 +17,13 @@ export class App extends Component {
     this.state = {
       promos: [],
       isCreateModalOpen: false,
-      isDeleteModalOpen: false, // Agrega el estado para el modal de eliminación
-      promoToDeleteId: null, // Agrega el estado para almacenar el ID de la promoción a eliminar
-      promoToEditData: null, // Agrega el estado para almacenar los datos de la promoción a editar
+      isDeleteModalOpen: false,
+      isFindByIdModalOpen: false,
+      isFindByCityModalOpen: false,
+      promoToDeleteId: null,
+      promoToEditData: null,
+      promoToFindId: null,
+      promoToFindCity: "",
     };
     this.promoService = new PromoService();
   }
@@ -82,30 +88,24 @@ export class App extends Component {
     this.promoService
       .edit(editedPromotionData)
       .then(() => {
-        // Se edita la promoción exitosamente
         toast.success("Promoción editada exitosamente");
-        // Actualiza la lista de promociones
         this.promoService.getAll().then((data) => {
           this.setState({ promos: data });
         });
       })
       .catch((error) => {
-        // Falla al editar la promoción
         toast.error("Error al editar la promoción");
         console.error("Error al editar la promoción:", error);
       });
 
-    // Cierra el modal de edición
     this.handleCloseEditModal();
   };
 
   handleOpenEditModal = (promoId) => {
-    // Obtén los detalles de la promoción para editar
     const promoToEdit = this.state.promos.find(
       (promo) => promo.idPromo === promoId
     );
 
-    // Establece los datos de la promoción en el estado para que el modal los use
     this.setState({
       isEditModalOpen: true,
       promoToEditData: promoToEdit,
@@ -117,21 +117,102 @@ export class App extends Component {
   };
 
   handleGet = () => {
-    console.log("Obtener datos");
+    this.promoService
+      .getAll()
+      .then(() => {
+        toast.success("Se mostrarón todas las promociones");
+        this.promoService.getAll().then((data) => {
+          this.setState({ promos: data });
+        });
+      })
+      .catch((error) => {
+        toast.error("Error al obtener promoción");
+        console.error("Error al obtener promoción", error);
+      });
+  };
+
+  handleGetBestDiscount = () => {
+    this.promoService
+      .findBestDiscount()
+      .then((data) => {
+        toast.success("Mejor descuento encontrado exitosamente");
+        this.setState({ promos: data });
+      })
+      .catch((error) => {
+        toast.error("Error al obtener promoción");
+        console.error("Error al obtener promoción", error);
+      });
+  };
+
+  handleFindById = (promoId) => {
+    this.promoService
+      .findById(promoId)
+      .then(() => {
+        toast.success("Promoción encontrada exitosamente");
+        this.promoService.findById().then((data) => {
+          this.setState({ promos: data });
+        });
+      })
+      .catch((error) => {
+        toast.error("Error al obtener promoción");
+        console.error("Error al obtener promoción por ID:", error);
+      });
+      this.handleCloseFindById();
+  };
+
+  handleOpenFindById = () => {
+    this.setState({ isFindByIdModalOpen: true });
+  };
+
+  handleCloseFindById = () => {
+    this.setState({ isFindByIdModalOpen: false, promoToFindId: null });
+  };
+
+  handleFindByCity = (city) => {
+    this.promoService
+      .findByCity(city)
+      .then(() => {
+        toast.success("Mejor descuento encontrado exitosamente");
+        this.promoService.findByCity().then((data) => {
+          this.setState({ promos: data });
+        });
+      })
+      .catch((error) => {
+        toast.error("Error al obtener promoción");
+        console.error(`Error al obtener promociones en ${city}:`, error);
+      });
+      this.handleCloseFindByCity();
+  };
+
+  handleOpenFindByCity = () => {
+    this.setState({ isFindByCityModalOpen: true });
+  };
+
+  handleCloseFindByCity = () => {
+    this.setState({ isFindByCityModalOpen: false, promoToFindCity: "" });
   };
 
   render() {
-    const { promos, isCreateModalOpen, isDeleteModalOpen, isEditModalOpen } =
-      this.state;
+    const {
+      promos,
+      isCreateModalOpen,
+      isDeleteModalOpen,
+      isEditModalOpen,
+      isFindByIdModalOpen,
+      isFindByCityModalOpen,
+    } = this.state;
 
     return (
       <>
         <h1>Promociones [Módulo 9]</h1>
         <CrudPanel
-          onCreate={this.handleOpenCreateModal}
           onGet={this.handleGet}
+          onCreate={this.handleOpenCreateModal}
           onUpdate={this.handleOpenEditModal}
           onDelete={this.handleOpenDeleteModal}
+          onFindById={this.handleOpenFindById}
+          onFindByCity={this.handleOpenFindByCity}
+          /* onGetBestDiscount={this.handleGetBestDiscount} */
         />
         <DataTable promos={promos} />
         <CreateModal
@@ -149,6 +230,16 @@ export class App extends Component {
           onClose={this.handleCloseEditModal}
           onEdit={this.handleEdit}
           promoToEditData={this.state.promoToEditData}
+        />
+        <FindByIdModal
+          open={isFindByIdModalOpen}
+          onClose={this.handleCloseFindById}
+          onFindId={this.handleFindById}
+        />
+        <FindByCity
+          open={isFindByCityModalOpen}
+          onClose={this.handleCloseFindByCity}
+          onFindByCity={this.handleFindByCity}
         />
         <ToastContainer />
       </>

@@ -5,14 +5,28 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PropTypes from "prop-types";
 
-const CrudPanel = ({ onGet, onCreate, onUpdate, onDelete }) => {
+const CrudPanel = ({
+  onGet,
+  onCreate,
+  onUpdate,
+  onDelete,
+  onFindById,
+  onFindByCity,
+  onFindBestDiscount
+}) => {
   CrudPanel.propTypes = {
     onGet: PropTypes.func.isRequired,
     onCreate: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired, // Cambiado de onEdit a onUpdate
+    onUpdate: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    onFindById: PropTypes.func.isRequired,
+    onFindByCity: PropTypes.func.isRequired,
+    onFindBestDiscount: PropTypes.func.isRequired,
   };
 
   const [value, setValue] = React.useState(null);
@@ -20,17 +34,26 @@ const CrudPanel = ({ onGet, onCreate, onUpdate, onDelete }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     switch (newValue) {
-      case "get":
-        onGet();
-        break;
       case "create":
-        onCreate();
-        break;
-      case "update":
-        onUpdate(); // Cambiado de onEdit a onUpdate
+        onCreate && onCreate();
         break;
       case "delete":
-        onDelete();
+        onDelete && onDelete();
+        break;
+      case "update":
+        onUpdate && onUpdate();
+        break;
+      case "get":
+        onGet && onGet();
+        break;
+      case "findByCity":
+        onFindByCity && onFindByCity();
+        break;
+      case "findById":
+        onFindById && onFindById();
+        break;
+      case "findBestDiscount":
+        onFindBestDiscount && onFindBestDiscount();
         break;
       default:
         break;
@@ -38,16 +61,16 @@ const CrudPanel = ({ onGet, onCreate, onUpdate, onDelete }) => {
   };
 
   return (
-    <BottomNavigation sx={{ width: 500 }} value={value} onChange={handleChange}>
+    <BottomNavigation sx={{ width: 700 }} value={value} onChange={handleChange}>
       <BottomNavigationAction
         label="Crear"
         value="create"
         icon={<AddCircleIcon />}
       />
       <BottomNavigationAction
-        label="Obtener"
-        value="get"
-        icon={<VisibilityIcon />}
+        label="Borrar"
+        value="delete"
+        icon={<DeleteIcon />}
       />
       <BottomNavigationAction
         label="Editar"
@@ -55,9 +78,24 @@ const CrudPanel = ({ onGet, onCreate, onUpdate, onDelete }) => {
         icon={<EditIcon />}
       />
       <BottomNavigationAction
-        label="Borrar"
-        value="delete"
-        icon={<DeleteIcon />}
+        label="Ver"
+        value="get"
+        icon={<VisibilityIcon />}
+      />
+      <BottomNavigationAction
+        label="Buscar por Ciudad"
+        value="findByCity"
+        icon={<LocationCityIcon />}
+      />
+      <BottomNavigationAction
+        label="Buscar por ID"
+        value="findById"
+        icon={<LocalOfferIcon />}
+      />
+      <BottomNavigationAction
+        label="Mejor Descuento"
+        value="findBestDiscount"
+        icon={<AttachMoneyIcon />}
       />
     </BottomNavigation>
   );
