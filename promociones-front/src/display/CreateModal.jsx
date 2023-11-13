@@ -51,12 +51,10 @@ const CreateModal = ({ open, onClose, onCreate }) => {
     onCreate(formData)
       .then(() => {
         // Solicitud exitosa
-        toast.success("Promoción creada exitosamente");
         onClose();
       })
       .catch((error) => {
         // Solicitud fallida
-        toast.error("Error al crear la promoción");
         console.error("Error al crear la promoción:", error);
       });
   };

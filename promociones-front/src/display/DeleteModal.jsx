@@ -1,7 +1,13 @@
 import { useState } from "react";
-import { Button, Dialog, DialogActions, DialogTitle, TextField } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import PropTypes from "prop-types";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 const DeleteModal = ({ open, onClose, onDelete }) => {
   const [promoId, setPromoId] = useState("");
@@ -11,14 +17,8 @@ const DeleteModal = ({ open, onClose, onDelete }) => {
   };
 
   const handleDelete = async () => {
-    try {
-      await onDelete(promoId);
-      toast.success("Promoción eliminada exitosamente");
-      onClose();
-    } catch (error) {
-      toast.error("Error al eliminar la promoción");
-      console.error("Error al eliminar la promoción:", promoId, error);
-    }
+    await onDelete(promoId);
+    onClose();
   };
 
   return (

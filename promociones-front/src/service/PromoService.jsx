@@ -32,8 +32,9 @@ export class PromoService {
       .then((res) => res.data);
   }
 
-  findBestDiscount(){
-    return axios.get(this.baseURL+"/bestDiscount")
-      .then((res)=> res.data)
-  }
+  findBestDiscount(limit, page) {
+    const params = { limit, page }; // Agrega los parámetros de paginación
+    return axios.get(`${this.baseURL}/bestDiscount`, { params })
+      .then((res) => res.data);
+  }  
 }

@@ -7,6 +7,7 @@ import DeleteModal from "./display/DeleteModal";
 import EditModal from "./display/EditModal";
 import FindByIdModal from "./display/FindByIdModal";
 import FindByCity from "./display/FindByCity";
+import FindBestPromo from "./display/FindBestPromo";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -20,6 +21,7 @@ export class App extends Component {
       isDeleteModalOpen: false,
       isFindByIdModalOpen: false,
       isFindByCityModalOpen: false,
+      isFindBestDiscountModalOpen: false,
       promoToDeleteId: null,
       promoToEditData: null,
       promoToFindId: null,
@@ -131,12 +133,13 @@ export class App extends Component {
       });
   };
 
-  handleGetBestDiscount = () => {
+  handleFindBestDiscount = (limit, page) => {
     this.promoService
-      .findBestDiscount()
+      .findBestDiscount(limit, page)
       .then((data) => {
         toast.success("Mejor descuento encontrado exitosamente");
         this.setState({ promos: data });
+        this.handleCloseFindBestDiscountModal();
       })
       .catch((error) => {
         toast.error("Error al obtener promoción");
@@ -144,20 +147,26 @@ export class App extends Component {
       });
   };
 
+  handleOpenFindBestDiscountModal = () => {
+    this.setState({ isFindBestDiscountModalOpen: true });
+  };
+
+  handleCloseFindBestDiscountModal = () => {
+    this.setState({ isFindBestDiscountModalOpen: false });
+  };
+
   handleFindById = (promoId) => {
     this.promoService
       .findById(promoId)
-      .then(() => {
+      .then((data) => {
         toast.success("Promoción encontrada exitosamente");
-        this.promoService.findById().then((data) => {
-          this.setState({ promos: data });
-        });
+        this.setState({ promos: [data] }); // Actualizar el estado con la nueva promoción
+        this.handleCloseFindById();
       })
       .catch((error) => {
         toast.error("Error al obtener promoción");
         console.error("Error al obtener promoción por ID:", error);
       });
-      this.handleCloseFindById();
   };
 
   handleOpenFindById = () => {
@@ -171,17 +180,15 @@ export class App extends Component {
   handleFindByCity = (city) => {
     this.promoService
       .findByCity(city)
-      .then(() => {
+      .then((data) => {
         toast.success("Mejor descuento encontrado exitosamente");
-        this.promoService.findByCity().then((data) => {
-          this.setState({ promos: data });
-        });
+        this.setState({ promos: data });
+        this.handleCloseFindByCity();
       })
       .catch((error) => {
         toast.error("Error al obtener promoción");
         console.error(`Error al obtener promociones en ${city}:`, error);
       });
-      this.handleCloseFindByCity();
   };
 
   handleOpenFindByCity = () => {
@@ -200,6 +207,7 @@ export class App extends Component {
       isEditModalOpen,
       isFindByIdModalOpen,
       isFindByCityModalOpen,
+      isFindBestDiscountModalOpen,
     } = this.state;
 
     return (
@@ -212,7 +220,7 @@ export class App extends Component {
           onDelete={this.handleOpenDeleteModal}
           onFindById={this.handleOpenFindById}
           onFindByCity={this.handleOpenFindByCity}
-          /* onGetBestDiscount={this.handleGetBestDiscount} */
+          onFindBestDiscount={this.handleOpenFindBestDiscountModal}
         />
         <DataTable promos={promos} />
         <CreateModal
@@ -240,6 +248,11 @@ export class App extends Component {
           open={isFindByCityModalOpen}
           onClose={this.handleCloseFindByCity}
           onFindByCity={this.handleFindByCity}
+        />
+        <FindBestPromo
+          open={isFindBestDiscountModalOpen}
+          onClose={this.handleCloseFindBestDiscountModal}
+          onFindBestPromo={this.handleFindBestDiscount}
         />
         <ToastContainer />
       </>

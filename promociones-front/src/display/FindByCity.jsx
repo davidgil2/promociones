@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import PropTypes from "prop-types";
 import {
   Dialog,
@@ -17,14 +17,8 @@ const FindByCity = ({ open, onClose, onFindByCity }) => {
   };
 
   const handleFind = async () => {
-    try {
-      await onFindByCity(city);
-      toast.success("Promoción encontrada exitosamente");
-      onClose();
-    } catch (error) {
-      toast.error("Error al encontrar la promoción");
-      console.error("Error al encontrar la promoción:", city, error);
-    }
+    await onFindByCity(city);
+    onClose();
   };
 
   return (

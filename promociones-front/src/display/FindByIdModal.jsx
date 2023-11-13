@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import PropTypes from "prop-types";
 import {
   Dialog,
@@ -17,14 +17,8 @@ const FindByIdModal = ({ open, onClose, onFindId }) => {
   };
 
   const handleFind = async () => {
-    try {
-      await onFindId(promoId);
-      toast.success("Promoción encontrada exitosamente");
-      onClose();
-    } catch (error) {
-      toast.error("Error al encontrar la promoción");
-      console.error("Error al encontrar la promoción:", promoId, error);
-    }
+    await onFindId(promoId);
+    onClose();
   };
 
   return (
